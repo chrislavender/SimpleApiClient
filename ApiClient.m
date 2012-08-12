@@ -74,18 +74,17 @@
             // CL: json errors would be caught here.
             if (error) {
                 NSLog(@"[%@ %@] JSON error: %@", NSStringFromClass([blockSelf class]), NSStringFromSelector(_cmd), error.localizedDescription);
-                // CL: if it isn't valid JSON, what the hell is it?
-
 #if _LogResponses_
 #else
-                NSLog(@"BAD JSON Data as string:\n%@\n",[[NSString alloc] initWithBytes:[data bytes] 
+                // CL: if it isn't valid JSON, what the hell is it?
+                NSLog(@"BAD JSON Data as string:\n%@\n",[[NSString alloc] initWithBytes:[data bytes]
                                                                                  length:[data length] 
                                                                                encoding:NSISOLatin1StringEncoding]);
 #endif
                 
                 result = error;
             }
-            // CL: Check for an  API errors.
+            // CL: Check for any API errors.
             else if ([blockSelf checkForAPIError:result error:&error]) {
                 //CL: if there's an error make the NSError object the result.
                 if (error) result = error;
@@ -118,7 +117,7 @@
     }
 
     NSString *urlString = nil;
-    // build the complete url using stringWithFormat:"
+    // build the complete url"
     if (getParams) {
         urlString = [NSString stringWithFormat:@"%@%@%@", kAPIBaseUrl, pathString, [getParams urlEncodedString]];
     }
@@ -174,28 +173,21 @@
 #pragma mark- Reachability Methods
 + (BOOL)internetIsReachable 
 {
-    
     BOOL result = YES;
-#if _GenerateDatabase_
-#else
+
     Reachability *r = [Reachability reachabilityWithHostName:@"google.com"];
     NetworkStatus internetStatus = [r currentReachabilityStatus];
     if(internetStatus == NotReachable)
     {
-        // CL: maybe this should be changed to send a message to a VC?
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" 
                                                         message:@"You do not seem to have internet connectivity at this time." 
                                                        delegate:nil 
                                               cancelButtonTitle:@"Ok" 
                                               otherButtonTitles: nil];
-        
-        //[[NSNotificationCenter defaultCenter] postNotificationName:@"LogOutFromShop" object:nil];
-        
         [alert show];
         
 		result = NO;
     }
-#endif
     return result;
 }
 
