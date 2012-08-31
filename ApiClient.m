@@ -8,9 +8,11 @@
 
 #import "ApiClient.h"
 #import "Reachability.h"
+#import "SBJSON.h"
 
 @interface ApiClient()
 @property (strong, nonatomic) NSOperationQueue  *opQueue;
+@property (strong, nonatomic) SBJSON *jsonParser;
 @end
 
 @implementation ApiClient
@@ -100,6 +102,52 @@
                            completionHandler:responseBlock];
 }
 
+- (void)sendRequestUsingGcdWithURLRequest:(NSURLRequest *)request andCallback:(void (^)(id))handler
+{
+    __weak ApiClient *blockSelf = self;
+   
+    void (^requestBlock)(void) = ^{
+       
+        NSURLResponse *response = nil;
+        NSError *error = nil;
+        NSData *responseData = [NSURLConnection sendSynchronousRequest:request
+                                                     returningResponse:&response
+                                                                 error:&error];
+        id results = nil;
+    
+        // CL: http errors would be caught here.
+        if (error) {
+             NSLog(@"[%@ %@] HTTP error: %@", NSStringFromClass([blockSelf class]), NSStringFromSelector(_cmd), error.localizedDescription);
+             results = error;
+        } else {
+             // CL: convert NSURLResponse to an NSString
+             NSString *jsonString = [[NSString alloc] initWithBytes:[responseData bytes]
+                                                             length:[responseData length]
+                                                           encoding:NSISOLatin1StringEncoding];           
+            // CL: parse the JSON
+            results = jsonString ? [self.jsonParser objectWithString:jsonString error:&error] : nil;
+       
+           // CL: json errors would be caught here.
+            if (error) {
+                   NSLog(@"[%@ %@] JSON error: %@", NSStringFromClass([blockSelf class]), NSStringFromSelector(_cmd), error.localizedDescription);
+                   results = error;
+            }
+            // CL: Check for any Miso API errors.
+            else if ([blockSelf checkForAPIError:results error:&error]) {
+                //CL: if there's an error make the NSError object the result.
+                if (error) results = error;
+           }
+        }
+      	
+        // If no errors send result to the completion block
+        handler(results);
+    };
+    	
+      dispatch_queue_t downloadQueue = dispatch_queue_create("BDXDownloadQueue", NULL);
+      dispatch_async(downloadQueue, requestBlock);
+      dispatch_release(downloadQueue);
+}
+
 #pragma mark- ApiClientProtocol Method Implementations
 - (void)requestWithPath:(NSString *)path 
                  method:(NSString *)method 
@@ -107,7 +155,6 @@
              postParams:(NSDictionary *)postParams 
             andCallback:(CallbackHandlerBlock)handler
 {
-    
     NSString *pathString = nil;
     if (method) {
         pathString = [NSString stringWithFormat:@"/%@/%@.json?",path,method];
@@ -158,6 +205,7 @@
     if ([[self class] internetIsReachable]) 
     {
         [self sendRequestUsingNSURLConnectionWithURLRequest:request andCallback:handler];
+        // [self sendRequestUsingGcdWithURLRequest:request andCallback:handler];
     }
 }
 
@@ -168,6 +216,14 @@
         _opQueue = [[NSOperationQueue alloc] init];
     }
     return _opQueue;
+}
+
+- (SBJSON *)jsonParser
+{
+    if (!_jsonParser) {
+        _jsonParser = [[SBJSON alloc]init];
+    }
+    return _jsonParser;
 }
 
 #pragma mark- Reachability Methods
