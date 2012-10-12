@@ -8,6 +8,7 @@
 
 #import "ApiClient.h"
 #import "Reachability.h"
+#import "NSDictionary+URLEncoding.h"
 //#import "SBJSON.h"
 
 @interface ApiClient()
@@ -245,50 +246,6 @@
 		result = NO;
     }
     return result;
-}
-
-@end
-
-
-
-
-#pragma mark- NSDictionary API Specific Category Implementation
-
-// helper function: get the string form of any object
-static NSString * toString(id object) {
-    return [NSString stringWithFormat: @"%@", object];
-}
-
-// helper function: get the url encoded string form of any object
-static NSString * urlEncode(id object) {
-    NSString * string = nil;
-    
-    // CL: if the Dictionary item is an Array of other objects
-    // than we need to pull them out and prep them.
-    // otherwise, the memory addresses are sent rather than the values
-    if ([object isKindOfClass:[NSArray class]]) string = [object componentsJoinedByString:@","];
-    else string = toString(object);
-    
-    NSString * encodedString = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                                                     (__bridge CFStringRef)string,
-                                                                                                     NULL,
-                                                                                                     (CFStringRef)@"!*'();:@&=+$,/?%#[]",
-                                                                                                     kCFStringEncodingUTF8);
-    return encodedString;
-}
-
-@implementation NSDictionary (UrlEncoding)
-
--(NSString*) urlEncodedString 
-{
-    NSMutableArray *parts = [NSMutableArray array];
-    for (id key in self) 
-    {
-        id value = [self objectForKey: key];
-        NSString *part = [NSString stringWithFormat: @"%@=%@", urlEncode(key), urlEncode(value)];
-        [parts addObject: part];
-    }
-    return [parts componentsJoinedByString: @"&"];
 }
 
 @end
