@@ -35,5 +35,5 @@ typedef void (^CallbackHandlerBlock)(id);
 // Category for NSDictionary to convert 
 // key/values get params to NSString
 @interface NSDictionary (UrlEncoding)
--(NSString*) urlEncodedString;
+-(NSString *) urlEncodedString;
 @end
