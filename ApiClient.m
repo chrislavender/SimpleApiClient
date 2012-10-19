@@ -253,6 +253,9 @@
     NetworkStatus internetStatus = [r currentReachabilityStatus];
     
     if(internetStatus == NotReachable) {
+        // for anything that might need to be notified that an AlertView is being presented.
+        [[NSNotificationCenter defaultCenter] postNotificationName: kAlertViewPresentedNotification
+                                                            object: nil];
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
                                                         message:@"You do not seem to have internet connectivity at this time." 
