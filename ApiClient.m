@@ -35,8 +35,12 @@
             if (anError != NULL) {
                 NSString *description = [incomingData objectForKey:@"error"];
                 // Make and return custom domain error.
-                NSDictionary *userDict = [NSDictionary dictionaryWithObject:description forKey:kAPIErrorKey];
-                *anError = [[NSError alloc] initWithDomain:@"TouchFrameAPI" code:0 userInfo:userDict];
+                NSDictionary *userDict = [NSDictionary dictionaryWithObject:description
+                                                                     forKey:NSLocalizedDescriptionKey];
+                
+                *anError = [[NSError alloc] initWithDomain:@"TouchFrameAPI"
+                                                      code:0
+                                                  userInfo:userDict];
             }
             
         }
