@@ -3,22 +3,31 @@
 //  ApiProject
 //
 //  Created by Chris Lavender on 12/9/11.
-//  Copyright (c) 2011 TouchFrame. All rights reserved.
+//  Copyright (c) 2011 GnarlyDogMusic. All rights reserved.
 //
 
 /*
- The ApiClient is the request handling portion of the 
- API. It receives all elements of a request, constructs the 
+ The ApiClient receives all elements of a request, constructs the 
  url, does a reachability check, and initiates the request.  
  It also recieves the response, converts the JSON data, and 
  does HTTP, JSON, and  API error checking. If an error is 
  found, it is sent back up the chain via the requestor's 
  callback.
+ 
+ Note: this class assumes REST-ful JSON requests ending in .json
+ this is can be easily modified however in 
+ requestWithPath:method:getParams:postParams:andCallback
 */
 
 #import <Foundation/Foundation.h>
 
+#define _LogRequests_ 0
+#define _LogResponses_ 0
+
 typedef void (^CallbackHandlerBlock)(id);
+
+NSString *const kAPIBaseUrl;
+NSString *const kAlertViewPresentedNotification;
 
 @interface ApiClient : NSObject
 
