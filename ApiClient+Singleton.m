@@ -3,7 +3,7 @@
 //  Braindex
 //
 //  Created by Chris Lavender on 6/19/12.
-//  Copyright (c) 2012 TouchFrame. All rights reserved.
+//  Copyright (c) 2012 Chris Lavender. All rights reserved.
 //
 
 #import "ApiClient+Singleton.h"
@@ -13,12 +13,12 @@
 #pragma mark - Singleton Methods
 static ApiClient *shared = nil;
 
-// CL: I always try to avoid @synchronized. Paricularly for shared singletons 
+// CL: Don't use @synchronized. Particularly for shared singletons
 + (ApiClient *)shared 
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shared = [[ApiClient alloc] init];
+        shared = [[ApiClient alloc] initWithBaseUrl:_BaseUrl_];
     });
     return shared;
 } 
