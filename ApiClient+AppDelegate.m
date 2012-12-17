@@ -7,13 +7,20 @@
 //
 
 #import "ApiClient+AppDelegate.h"
-#import "AppDelegate.h"
 
 @implementation ApiClient (AppDelegate)
 
 + (ApiClient *)client
 {
-    return ((AppDelegate *)[UIApplication sharedApplication].delegate).apiClient;
+    ApiClient *client = nil;
+    
+    id appDel = [[UIApplication sharedApplication] delegate];
+    
+    if ([appDel respondsToSelector:@selector(apiClient)]) {
+        client = [appDel valueForKey:@"apiClient"];
+    } 
+    
+    return client;
 }
 
 @end
