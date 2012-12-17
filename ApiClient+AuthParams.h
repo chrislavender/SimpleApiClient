@@ -11,5 +11,6 @@
 @interface ApiClient (AuthParams)
 
 + (NSDictionary *)authorizationGetParams;
++ (NSDictionary *)packAuthorizationGetParamsWithGetParams:(NSDictionary *)getParams;
 
 @end
