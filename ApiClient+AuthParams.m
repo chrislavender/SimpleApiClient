@@ -8,8 +8,6 @@
 
 #import "ApiClient+AuthParams.h"
 #import "AppDelegate.h"
-#import "UserManager.h"
-#import "User.h"
 
 @implementation ApiClient (AuthParams)
 
@@ -21,19 +19,19 @@
 
 + (NSDictionary *)authorizationGetParams
 {
-//    NSDictionary *userGetParams = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                   kApiKey, @"api_key",
-//                                   nil];
+    NSDictionary *userGetParams = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   kApiKey, @"api_key",
+                                   nil];
     
     
      // One implementation would be to hold a pointer to the "current user" via a property in the AppDelegate.
      // In this case, you can get a user_id and/or auth_token via code like:
     
-     NSDictionary *userGetParams = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    [UserManager sharedManager].currentUser.unique_id, @"user_id",
-                                    [UserManager sharedManager].currentUser.auth_token, @"auth_token",
-                                    nil];
-     
+//     NSDictionary *userGetParams = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                    ((AppDelegate *)[UIApplication sharedApplication].delegate).currentUser.unique_id, @"user_id",
+//                                    ((AppDelegate *)[UIApplication sharedApplication].delegate).currentUser.auth_token, @"auth_token",
+//                                    nil];
+    
 
     return userGetParams;
 }
