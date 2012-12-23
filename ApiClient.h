@@ -16,8 +16,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define _LogRequests_ 1
-#define _LogResponses_ 1
 
 typedef void (^CallbackHandlerBlock)(id);
 
