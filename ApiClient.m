@@ -62,7 +62,7 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
         
     }
     
-#if _LogRequests_
+#ifdef _LogRequests_
     NSLog(@" URL: %@", urlString);
 #endif
     
@@ -73,7 +73,7 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
     if (postParams) {
         
         NSString *post = [postParams urlEncodedString];
-#if _LogRequests_
+#ifdef _LogRequests_
         NSLog(@"POST: %@", post);
 #endif
         NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
@@ -111,7 +111,7 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
         
         ApiClient *strongSelf = weakSelf;
         
-#if _LogResponses_
+#ifdef _LogResponses_
         printf("REPONSE:\n%s\n\n",[[[NSString alloc] initWithBytes:[data bytes] 
                                                             length:[data length] 
                                                           encoding:NSISOLatin1StringEncoding] UTF8String]);
@@ -147,7 +147,7 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
                       NSStringFromClass([strongSelf class]),
                       NSStringFromSelector(_cmd),
                       error.localizedDescription);
-#if _LogResponses_
+#ifdef _LogResponses_
 #else
                 // if it isn't valid JSON, what the hell is it?
                 NSLog(@"BAD JSON Data as string:\n%@\n",[[NSString alloc] initWithBytes:[data bytes]
