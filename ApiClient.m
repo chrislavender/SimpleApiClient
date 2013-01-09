@@ -147,8 +147,7 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
                       NSStringFromClass([strongSelf class]),
                       NSStringFromSelector(_cmd),
                       error.localizedDescription);
-#ifdef _LogResponses_
-#else
+#ifndef _LogResponses_
                 // if it isn't valid JSON, what the hell is it?
                 NSLog(@"BAD JSON Data as string:\n%@\n",[[NSString alloc] initWithBytes:[data bytes]
                                                                                  length:[data length] 
