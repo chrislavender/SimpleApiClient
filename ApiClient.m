@@ -191,9 +191,8 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
             if (anError != NULL) {
                 
                 // set the provided pointer to a custom domain error.
-                NSString *description = [incomingData objectForKey:@"error"];
-                NSDictionary *userDict = [NSDictionary dictionaryWithObject:description
-                                                                     forKey:NSLocalizedDescriptionKey];
+                NSString *description = incomingData[@"error"];
+                NSDictionary *userDict = @{NSLocalizedDescriptionKey: description};
                 
                 *anError = [[NSError alloc] initWithDomain:@"API"
                                                       code:0
@@ -269,7 +268,7 @@ static NSString * urlEncode(id object) {
     
     for (id key in self) {
         
-        id value = [self objectForKey: key];
+        id value = self[key];
         NSString *part = [NSString stringWithFormat: @"%@=%@", urlEncode(key), urlEncode(value)];
         [parts addObject: part];
     
