@@ -7,15 +7,25 @@
 //
 
 #import "ApiClient.h"
-#import "Reachability.h"
 
 @interface ApiClient()
 @property (strong, nonatomic) NSOperationQueue  *opQueue;
+@property (strong, nonatomic, readwrite) Reachability *reachability;
 @end
 
 NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotification";
 
 @implementation ApiClient
+
++ (ApiClient *)shared
+{
+    static ApiClient *shared = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[ApiClient alloc] initWithBaseUrl:kAPIBaseUrl];
+    });
+    return shared;
+}
 
 - (NSOperationQueue *)opQueue
 {
@@ -30,6 +40,8 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
     self = [super init];
     if (self) {
         _baseUrl = urlString;
+        self.reachability = [Reachability reachabilityForInternetConnection];
+        [self.reachability startNotifier];
     }
     return self;
 }
@@ -92,12 +104,8 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
         
     }
     
-    // check for Reachability.
-    if ([[self class] internetIsReachable]) {
-        
-        [self sendRequestUsingNSURLConnectionWithURLRequest:request
-                                                andCallback:handler];
-    }
+    [self sendRequestUsingNSURLConnectionWithURLRequest:request
+                                            andCallback:handler];
     
 }
 
@@ -199,32 +207,6 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
                                                   userInfo:userDict];
             }
         }
-    }
-    
-    return result;
-}
-
-#pragma mark- Reachability Methods
-+ (BOOL)internetIsReachable
-{
-    BOOL result = YES;
-    
-    Reachability *r = [Reachability reachabilityWithHostName:@"google.com"];
-    NetworkStatus internetStatus = [r currentReachabilityStatus];
-    
-    if(internetStatus == NotReachable) {
-        // for anything that might need to be notified that an AlertView is being presented.
-        [[NSNotificationCenter defaultCenter] postNotificationName: kAlertViewPresentedNotification
-                                                            object: nil];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
-                                                        message:@"You do not seem to have internet connectivity at this time."
-                                                       delegate:nil
-                                              cancelButtonTitle:@"Ok"
-                                              otherButtonTitles: nil];
-        [alert show];
-        
-		result = NO;
     }
     
     return result;

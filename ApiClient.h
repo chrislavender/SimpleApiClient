@@ -15,7 +15,7 @@
 */
 
 #import <Foundation/Foundation.h>
-
+#import "Reachability.h"
 
 typedef void (^CallbackHandlerBlock)(id);
 
@@ -29,6 +29,10 @@ NSString *const kAlertViewPresentedNotification;
 @interface ApiClient : NSObject
 
 @property (strong, nonatomic, readonly) NSString *baseUrl;
+
+@property (strong, nonatomic, readonly) Reachability *reachability;
+
++ (ApiClient *)shared;
 
 /*
  designated initializer. 
@@ -49,11 +53,6 @@ NSString *const kAlertViewPresentedNotification;
               getParams:(NSDictionary *)getParams
              postParams:(NSDictionary *)postParams
             andCallback:(CallbackHandlerBlock)handler;
-
-/*
- added here as a convience for other classes
-*/
-+ (BOOL)internetIsReachable;
 
 @end
 
