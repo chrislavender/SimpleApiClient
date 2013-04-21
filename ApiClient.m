@@ -112,12 +112,11 @@ NSString *const kAlertViewPresentedNotification = @"AlertViewPresentedNotificati
 - (void)sendRequestUsingNSURLConnectionWithURLRequest:(NSURLRequest *)request
                                           andCallback:(CallbackHandlerBlock)handler
 {
-    __weak ApiClient *weakSelf = self;
+    typeof(self) __weak weakSelf = self;
     
     // build a block to be run asynchronously
     void (^responseBlock)(NSURLResponse *, NSData *, NSError *) = ^(NSURLResponse *response, NSData *data, NSError *error) {
-        
-        ApiClient *strongSelf = weakSelf;
+        typeof(weakSelf)strongSelf = weakSelf;
         
 #ifdef _LogResponses_
         printf("REPONSE:\n%s\n\n",[[[NSString alloc] initWithBytes:[data bytes] 
